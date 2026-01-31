@@ -21,7 +21,7 @@ const UserIcon = () => (
 );
   return (
     <section className="relative pt-32 pb-28 md:pt-48 md:pb-40 px-6 overflow-hidden">
-      <div className="max-w-4xl mx-auto text-center relative z-20">
+      <div id="top" className="max-w-4xl mx-auto text-center relative z-20">
 
         {/* Version badge */}
         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-white/10 bg-white/5 mb-6">
