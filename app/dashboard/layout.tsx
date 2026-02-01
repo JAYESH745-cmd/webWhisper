@@ -1,4 +1,3 @@
-
 import Sidebar from "@/components/dashboard/sidebar";
 import type { Metadata } from "next";
 import { cookies } from "next/headers";
@@ -13,21 +12,18 @@ export default async function DashboardLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const cookieStore = await cookies();
+  const cookieStore = await cookies(); // ✅ NO await
   const metadataCookie = cookieStore.get("metadata");
 
   return (
-    <div className="bg-[#050509] min-h-screen font-sans antialiased text-white">
-      {metadataCookie?.value ? 
-      <>
-      <Sidebar/>
+    <div className="bg-[#050509] min-h-screen font-sans antialiased text-white flex">
+      {/* Sidebar only if metadata exists */}
+      {metadataCookie?.value && <Sidebar />}
 
-      
-      </> 
-      
-      
-      
-      : children}
+      {/* MAIN CONTENT ALWAYS RENDERS */}
+      <main className="flex-1">
+        {children}
+      </main>
     </div>
   );
 }
