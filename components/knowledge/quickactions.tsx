@@ -1,64 +1,71 @@
-"use client";
+import { Button } from "@/components/ui/button";
+import { File, Globe, Upload } from "lucide-react";
+import React from "react";
 
-import { Globe, Upload, FileText } from "lucide-react";
-
-type QuickActionsProps = {
-  onOpenModal: (tab: "website" | "upload" | "text") => void;
-};
-
-export default function QuickActions({ onOpenModal }: QuickActionsProps) {
+const QuickActions = ({
+  onOpenModal,
+}: {
+  onOpenModal: (tab: string) => void;
+}) => {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-      {/* Website */}
-      <div
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <Button
+        variant={"outline"}
+        className="h-auto py-8 px-6 flex flex-col items-center justify-center gap-4 border-white/5 bg-[#0A0A0E] hover:bg-white/2 hover:border-indigo-500/30 transition-all  hover:text-white group whitespace-normal"
         onClick={() => onOpenModal("website")}
-        className="cursor-pointer rounded-xl border border-white/10 bg-white/[0.02] p-5 hover:bg-white/[0.04] transition"
       >
-        <div className="w-9 h-9 rounded-md bg-indigo-500/10 flex items-center justify-center mb-4">
-          <Globe className="w-5 h-5 text-indigo-400" />
+        <div className="p-3 rounded-full bg-indigo-500/10 border border-indigo-500/10 group-hover:bg-indigo-500/20 transition-colors ">
+          <Globe className="w-6 h-6 text-indigo-400" />
         </div>
 
-        <h3 className="text-sm font-medium text-white mb-1">
-          Add Website
-        </h3>
-        <p className="text-xs text-zinc-400 leading-relaxed">
-          Crawl your website or specific pages to sync knowledge automatically.
-        </p>
-      </div>
-
-      {/* Upload */}
-      <div
+        <div className="space-y-1.5 text-center w-full">
+          <span className="text-sm font-semibold block whitespace-normal">
+            Add Website
+          </span>
+          <p className="text-xs text-zinc-500 font-normal leading-relaxed whitespace-normal wrap-break-word">
+            Crawl your website or specific pages to automatically keep your
+            knowledge base in sync
+          </p>
+        </div>
+      </Button>
+      <Button
+        variant={"outline"}
+        className="h-auto py-8 px-6 flex flex-col items-center justify-center gap-4 border-white/5 bg-[#0A0A0E] hover:bg-white/2 hover:border-indigo-500/30 transition-all  hover:text-white group whitespace-normal"
         onClick={() => onOpenModal("upload")}
-        className="cursor-pointer rounded-xl border border-white/10 bg-white/[0.02] p-5 hover:bg-white/[0.04] transition"
       >
-        <div className="w-9 h-9 rounded-md bg-emerald-500/10 flex items-center justify-center mb-4">
-          <Upload className="w-5 h-5 text-emerald-400" />
+        <div className="p-3 rounded-full bg-indigo-500/10 border border-indigo-500/10 group-hover:bg-indigo-500/20 transition-colors ">
+          <Upload className="w-6 h-6 text-indigo-400" />
         </div>
 
-        <h3 className="text-sm font-medium text-white mb-1">
-          Upload File
-        </h3>
-        <p className="text-xs text-zinc-400 leading-relaxed">
-          Upload CSV or documents to instantly train your assistant.
-        </p>
-      </div>
-
-      {/* Text */}
-      <div
+        <div className="space-y-1.5 text-center w-full">
+          <span className="text-sm font-semibold block whitespace-normal">
+            Upload File
+          </span>
+          <p className="text-xs text-zinc-500 font-normal leading-relaxed whitespace-normal wrap-break-word">
+           Upload CSV files to instantly train your assistant with existing.
+          </p>
+        </div>
+      </Button>
+      <Button
+        variant={"outline"}
+        className="h-auto py-8 px-6 flex flex-col items-center justify-center gap-4 border-white/5 bg-[#0A0A0E] hover:bg-white/2 hover:border-indigo-500/30 transition-all  hover:text-white group whitespace-normal"
         onClick={() => onOpenModal("text")}
-        className="cursor-pointer rounded-xl border border-white/10 bg-white/[0.02] p-5 hover:bg-white/[0.04] transition"
       >
-        <div className="w-9 h-9 rounded-md bg-zinc-500/10 flex items-center justify-center mb-4">
-          <FileText className="w-5 h-5 text-zinc-300" />
+        <div className="p-3 rounded-full bg-indigo-500/10 border border-indigo-500/10 group-hover:bg-indigo-500/20 transition-colors ">
+          <File className="w-6 h-6 text-indigo-400" />
         </div>
 
-        <h3 className="text-sm font-medium text-white mb-1">
-          Add Text
-        </h3>
-        <p className="text-xs text-zinc-400 leading-relaxed">
-          Manually add FAQs, policies, or internal notes.
-        </p>
-      </div>
+        <div className="space-y-1.5 text-center w-full">
+          <span className="text-sm font-semibold block whitespace-normal">
+            Manual Text 
+          </span>
+          <p className="text-xs text-zinc-500 font-normal leading-relaxed whitespace-normal wrap-break-word">
+           Manually copy-paste FAQs, internal notes, or policies directtly into the knowledge base. 
+          </p>
+        </div>
+      </Button>
     </div>
   );
-}
+};
+
+export default QuickActions;

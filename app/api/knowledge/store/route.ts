@@ -1,8 +1,8 @@
 import { db } from "@/db/client";
 import { knowledge_source } from "@/db/schema";
 import firecrawl from "@/lib/firecrawl";
-import { isAuthorized } from "@/lib/isAuthorized";
-import { summarizeMarkdown } from "@/lib/openAI";
+import { isAuthorized } from "@/lib/isAuthorised";
+import { summarizeMarkdown } from "@/lib/openAi";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
