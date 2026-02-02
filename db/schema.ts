@@ -62,6 +62,8 @@ export const chatBotMetadata = pgTable("chatBotMetadata", {
   ),
   created_at: text("created_at").default(sql`now()`),
 });
+
+
 export const teamMembers = pgTable("team_members", {
   id: text("id")
     .primaryKey()
