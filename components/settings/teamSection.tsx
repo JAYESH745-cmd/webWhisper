@@ -128,7 +128,7 @@ const TeamSection = () => {
 
                 <Input
                   id="name"
-                  placeholder="Asif Ahmed"
+                  placeholder="Jayesh Arora"
                   value={newMemberName}
                   onChange={(e) => setNewMemberName(e.target.value)}
                   className="bg-white/5 border-white/10 text-white"
@@ -141,7 +141,7 @@ const TeamSection = () => {
 
                 <Input
                   id="email"
-                  placeholder="asifahmed@gmail.com"
+                  placeholder="jayesharora@gmail.com"
                   value={newMemberEmail}
                   onChange={(e) => setNewMemberEmail(e.target.value)}
                   className="bg-white/5 border-white/10 text-white"
