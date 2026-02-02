@@ -15,6 +15,8 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import React, { useEffect, useRef, useState } from "react";
 import { Section } from "@/@types/types";
+import image from "../../public/image.png"
+
 
 interface ChatbotMetadata {
   id: string;
@@ -244,7 +246,7 @@ const EmbedPage = () => {
         <div className="flex items-center gap-3">
           <div className="w-8 h-8 rounded-full overflow-hidden shrink-0">
             <Image
-              src="https://res.cloudinary.com/djbpo9xg5/image/upload/v1725030217/qnheigwgqbwldduangmo.jpg"
+              src={image}
               alt="Support agent"
               width={40}
               height={40}
@@ -284,7 +286,7 @@ const EmbedPage = () => {
               {msg.role !== "user" && (
                 <div className="w-9 h-9 rounded-full overflow-hidden shrink-0">
                   <Image
-                    src="https://res.cloudinary.com/djbpo9xg5/image/upload/v1725030217/qnheigwgqbwldduangmo.jpg"
+                    src={image}
                     alt="Support agent"
                     width={32}
                     height={32}
@@ -325,7 +327,7 @@ const EmbedPage = () => {
               <div className="flex max-w-[85%] gap-3 flex-row">
                 <div className="w-9 h-9 rounded-full overflow-hidden shrink-0">
                   <Image
-                    src="https://res.cloudinary.com/djbpo9xg5/image/upload/v1725030217/qnheigwgqbwldduangmo.jpg"
+                    src={image}
                     alt="Support agent"
                     width={32}
                     height={32}
