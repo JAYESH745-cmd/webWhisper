@@ -2,7 +2,7 @@ import OpenAI from "openai";
 import https from "https";
 
 const agent = new https.Agent({
-  rejectUnauthorized: false, 
+  rejectUnauthorized: false, // for development - in production make it true
 });
 
 const customFetch = (url: RequestInfo | URL, init?: RequestInit) => {
