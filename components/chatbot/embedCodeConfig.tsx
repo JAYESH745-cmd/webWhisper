@@ -32,10 +32,10 @@ const EmbedCodeConfig = ({ chatbotId }: { chatbotId: string | undefined }) => {
           <div className="bg-[#050509] border border-white/10 rounded-xl p-4 overflow-hidden">
             <pre className="text-xs text-zinc-300 font-mono overflow-x-auto whitespace-pre rounded-lg">
               {`<script
-  src="${process.env.NEXT_PUBLIC_WEBSITE_URI}/widget.js"
-  data-id="${chatbotId || "..."}"
-  defer
-></script>`}
+            src="${process.env.NEXT_PUBLIC_WEBSITE_URI}/widget.js"
+            data-id="${chatbotId || "..."}"
+            defer
+          ></script>`}
             </pre>
           </div>
           <Button

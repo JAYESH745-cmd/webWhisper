@@ -40,7 +40,7 @@ export const metadata: Metadata = {
   __html: `!function(){if(!window.UnicornStudio){window.UnicornStudio={isInitialized:!1};var i=document.createElement("script");i.src="https://cdn.jsdelivr.net/gh/hiunicornstudio/unicornstudio.js@v1.4.29/dist/unicornStudio.umd.js",i.onload=function(){window.UnicornStudio.isInitialized||(UnicornStudio.init(),window.UnicornStudio.isInitialized=!0)},(document.head || document.body).appendChild(i)}}();`,
   }}
   />
-<script src="https://one-minute-care.vercel.app/widget.js" data-id="661f072a-2ec6-4f01-9014-64346997d5a4" defer></script>
+{/* <script src="https://one-minute-care.vercel.app/widget.js" data-id="661f072a-2ec6-4f01-9014-64346997d5a4" defer></script> */}
 
   </body>
   </html>
