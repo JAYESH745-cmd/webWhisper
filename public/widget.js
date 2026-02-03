@@ -39,7 +39,7 @@
         var iframe = document.createElement("iframe");
 
         iframe.src =
-          `http://localhost:3000/embed?token=` + encodeURIComponent(data?.token);
+          `https://web-whisper-ten.vercel.app/embed?token=` + encodeURIComponent(data?.token);
 
         iframe.setAttribute("title", "Support chat");
         iframe.style.position = "fixed";
