@@ -1,90 +1,97 @@
-import OpenAI from "openai";
-import https from "https";
+import { GoogleGenAI } from "@google/genai";
 
-const agent = new https.Agent({
-  rejectUnauthorized: false, // for development - in production make it true
+export const client = new GoogleGenAI({
+  apiKey: process.env.GEMINI_API_KEY!,
 });
 
-const customFetch = (url: RequestInfo | URL, init?: RequestInit) => {
-  return fetch(url, {
-    ...init,
-    //@ts-ignore
-    agent: url.toString().startsWith("https") ? agent : undefined,
-  });
-};
-
-export const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-  fetch: customFetch,
-  baseURL: process.env.OPENAI_BASE_URL,
-});
-
+/**
+ * Summarize markdown / website content
+ */
 export async function summarizeMarkdown(markdown: string) {
   try {
-    const completion = await openai.chat.completions.create({
-      model: "gpt-4o-mini",
-      temperature: 0.1,
-      max_tokens: 900,
-      messages: [
-        {
-          role: "system",
-          content: `
-        You are a data summarization engine for an AI chatbot.
-
-        Task:
-        - Convert the input website content, markdown, text, or CSV data into a concise, clean summary suitable for LLM context usage.
-
-        Rules:
-        - Output only plain text; no markdown, bullet points, headings, or lists.
-        - Write as one continuous paragraph.
-        - Remove navigation, menus, buttons, CTAs, pricing tables, sponsors, ads, testimonials, charts, UI labels, emojis, and marketing fluff.
-        - Remove repetition; keep only factual, informational content useful for customer support.
-        - Do not copy sentences verbatim unless necessary.
-        - Compress aggressively while preserving meaning.
-        - Ensure the final summary is under 2000 words.
-
-        Note: The result will be stored as long-term context for a chatbot.
-      `,
-        },
+    const response = await client.models.generateContent({
+      model: "gemini-2.5-flash-lite",
+      contents: [
         {
           role: "user",
-          content: markdown,
+          parts: [
+            {
+              text: `
+You are a data summarization engine for an AI chatbot.
+
+IMPORTANT GENERATION CONSTRAINTS:
+- Be concise and deterministic
+- Do NOT exceed reasonable length
+- Avoid creative language
+
+Task:
+Convert the input website content, markdown, text, or CSV data into a concise, clean summary suitable for LLM context usage.
+
+Rules:
+- Output only plain text
+- One continuous paragraph
+- Remove navigation, menus, CTAs, ads, fluff, UI text
+- Preserve only factual, support-relevant information
+- Aggressively compress while preserving meaning
+- Final output must be under 2000 words
+Note: The result will be stored as long-term context for a chatbot.
+
+INPUT:
+${markdown}
+              `,
+            },
+          ],
         },
       ],
     });
 
-    return completion.choices[0].message.content?.trim() ?? "";
+    return response.text?.trim() ?? "";
   } catch (error) {
-    console.error("Error in summarizationMarkdown:", error);
+    console.error("Error in summarizeMarkdown (Gemini):", error);
     throw error;
   }
 }
 
+/**
+ * Summarize conversation history
+ */
 export async function summarizeConversation(messages: any[]) {
   try {
-    const completion = await openai.chat.completions.create({
-      model: "gpt-4o-mini",
+    const conversationText = messages
+      .map((m) => `${m.role.toUpperCase()}: ${m.content}`)
+      .join("\n");
 
-      temperature: 0.3,
-
-      max_tokens: 500,
-
-      messages: [
+    const response = await client.models.generateContent({
+      model: "gemini-2.5-flash-lite",
+      contents: [
         {
-          role: "system",
+          role: "user",
+          parts: [
+            {
+              text: `
+You are summarizing conversation history for long-term chatbot memory.
 
-          content:
-            "Summarize the following conversation history into a concise paragraph, preserving key details and user intent.The final output MUST be under 2000 words.",
+IMPORTANT:
+- Be concise
+- Preserve user intent and key facts
+- Avoid unnecessary detail
+- No formatting, no bullets
+
+Summarize the following conversation into ONE paragraph.
+The final output MUST be under 2000 words.
+
+Conversation:
+${conversationText}
+              `,
+            },
+          ],
         },
-
-        ...messages,
       ],
     });
 
-    return completion.choices[0].message.content?.trim() ?? "";
+    return response.text?.trim() ?? "";
   } catch (error) {
-    console.error("Error in summarizeConversation:", error);
-
+    console.error("Error in summarizeConversation (Gemini):", error);
     throw error;
   }
 }

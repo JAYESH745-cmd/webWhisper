@@ -1,22 +1,41 @@
-import {encodingForModel} from "js-tiktoken"
+import { GoogleGenAI } from "@google/genai";
 
-const enc = encodingForModel("gpt-4o-mini")
+const client = new GoogleGenAI({
+  apiKey: process.env.GEMINI_API_KEY!,
+});
 
-export function countTokens(text:string):number{
-    return enc.encode(text).length
+/**
+ * Count tokens for plain text (Gemini)
+ */
+export async function countTokens(text: string): Promise<number> {
+  const result = await client.models.countTokens({
+    model: "gemini-2.5-flash-lite",
+    contents: [
+      {
+        role: "user",
+        parts: [{ text }],
+      },
+    ],
+  });
+
+  return result.totalTokens ?? 0;
 }
 
-export function countConversationToken(
-    messages:{role:string;content:string}[]
-){
-    let tokens = 0;
+/**
+ * Count tokens for conversation messages (Gemini)
+ */
+export async function countConversationTokens(
+  messages: { role: string; content: string }[]
+): Promise<number> {
+  const contents = messages.map((m) => ({
+    role: m.role,
+    parts: [{ text: m.content }],
+  }));
 
-    for(const msg of messages){
-        tokens += 4;
-        tokens  += enc.encode(msg.content).length 
+  const result = await client.models.countTokens({
+    model: "gemini-2.5-flash-lite",
+    contents,
+  });
 
-    }
-
-    tokens += 2;
-    return tokens
+  return result.totalTokens ?? 0;
 }

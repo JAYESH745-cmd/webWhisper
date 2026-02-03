@@ -188,7 +188,7 @@ const EmbedPage = () => {
     }
   };
 
-  const primaryColor = "#4f46e5";
+const primaryColor = metadata?.color || "#4f46e5";
 
 
   if (loading) return null;
