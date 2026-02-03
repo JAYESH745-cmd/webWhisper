@@ -4,13 +4,13 @@ import Image from "next/image";
 const Hero = () => {
     const Avatar = () => (
   <div className="w-8 h-8 rounded-full overflow-hidden shrink-0">
-    <Image
+    {/* <Image
       src="https://images.unsplash.com/photo-1534528741775-53994a69daeb"
       alt="Agent"
       width={32}
       height={32}
       className="object-cover"
-    />
+    /> */}
   </div>
 );
 
