@@ -6,6 +6,11 @@ import { messages as messagesTable } from "@/db/schema";
 import { eq, inArray } from "drizzle-orm";
 import { countConversationTokens } from "@/lib/countConversationTokens";
 import { client, summarizeConversation } from "@/lib/openAi";
+type ChatMessage = {
+  role: "user" | "assistant" | "system";
+  content: string;
+};
+
 
 export async function POST(req: Request) {
   const authHeader = req.headers.get("Authorization");
@@ -40,7 +45,8 @@ export async function POST(req: Request) {
   }
 
   const body = await req.json();
-let messages = body.messages;
+let messages: ChatMessage[] = body.messages;
+
 const knowledge_source_ids = body.knowledge_source_ids;
 
   if (!Array.isArray(messages) || messages.length === 0) {
@@ -199,7 +205,7 @@ Context:${context}
     ${systemPrompt}
 
     Conversation:
-    ${messages.map(m => `${m.role.toUpperCase()}: ${m.content}`).join("\n")}
+    ${messages.map((m: ChatMessage) =>`${m.role.toUpperCase()}: ${m.content}`)}
             `,
             },
         ],
