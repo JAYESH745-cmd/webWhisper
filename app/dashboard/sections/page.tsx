@@ -18,7 +18,7 @@ import { SectionFormData,Section } from "@/@types/types";
 type SectionStatus = "active" | "draft" | "disabled";
 type Tone = "strict" | "neutral" | "friendly" | "empathetic";
 
-interface knowledgeSource {
+interface KnowledgeSource {
   id: string;
   name: string;
   type: string;
