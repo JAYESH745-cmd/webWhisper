@@ -14,7 +14,7 @@
       return;
     }
 
-    fetch("http://localhost:3000/api/widget/session", {
+    fetch("https://web-whisper-ten.vercel.app/api/widget/session", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       credentials: "omit",
