@@ -1,36 +1,117 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+🚀 WebWhisper
 
-## Getting Started
+An AI-powered web interaction platform that delivers intelligent responses and enhances user productivity.
 
-First, run the development server:
+📌 Overview
 
-```bash
+WebWhisper is a full-stack AI-driven application that improves how users interact with web content. It uses modern technologies like Next.js, PostgreSQL, and serverless APIs to provide fast, scalable, and intelligent experiences.
+
+✨ Features
+🤖 AI-powered responses
+⚡ Fast and responsive UI (Next.js)
+🔐 Secure authentication (JWT + bcrypt)
+📡 REST API architecture
+🗄️ PostgreSQL with Prisma ORM
+☁️ Serverless deployment (Vercel)
+📊 Scalable architecture
+🏗️ Tech Stack
+
+Frontend
+
+Next.js
+TypeScript
+Tailwind CSS
+
+Backend
+
+Next.js API Routes (Serverless)
+Node.js
+
+Database
+
+PostgreSQL
+Prisma ORM
+
+Authentication
+
+JWT (JSON Web Tokens)
+bcrypt
+
+Deployment
+
+Vercel
+📁 Project Structure
+
+webwhisper/
+│
+├── ui/ # Next.js app (frontend + backend)
+│ ├── src/
+│ ├── prisma/
+│ ├── public/
+│ └── ...
+│
+├── README.md
+└── ...
+
+⚙️ Installation & Setup
+1. Clone the repository
+
+git clone https://github.com/your-username/webwhisper.git
+
+cd webwhisper
+
+2. Install dependencies
+
+cd ui
+npm install
+
+3. Setup environment variables
+
+Create a .env.local file inside /ui:
+
+DATABASE_URL=your_postgresql_url
+JWT_SECRET=your_secret_key
+
+4. Setup database
+
+npx prisma generate
+npx prisma migrate dev
+
+5. Run the development server
+
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+App runs on:
+http://localhost:3000
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+🚀 Deployment (Vercel)
+Set Root Directory = ui
+Add environment variables
+Deploy 🚀
+🧠 How It Works
+User interacts with frontend
+Requests go to Next.js API routes
+Backend processes logic + database
+AI response is generated
+Result displayed instantly
+🔐 Security
+Password hashing with bcrypt
+JWT-based authentication
+Secure environment variables
+📌 Future Improvements
+🔄 Real-time AI streaming
+📱 Mobile optimization
+📊 Analytics dashboard
+🔌 Plugin system
+🤝 Contributing
+Fork the repo
+Create a branch
+Make changes
+Submit a PR
+📄 License
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+MIT License
 
-## Learn More
+👤 Author
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Jayesh Arora
