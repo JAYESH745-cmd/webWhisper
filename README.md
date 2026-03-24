@@ -81,8 +81,7 @@ npx prisma migrate dev
 
 npm run dev
 
-App runs on:
-http://localhost:3000
+
 
 🚀 Deployment (Vercel)
 Set Root Directory = ui
