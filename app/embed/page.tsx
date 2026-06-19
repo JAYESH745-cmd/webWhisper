@@ -227,6 +227,58 @@ const EmbedPage = () => {
     window.localStorage.setItem(messagesStorageKey, JSON.stringify(messages));
   }, [messages, messagesStorageKey]);
 
+  useEffect(() => {
+    if (!token || !isOpen) return;
+
+    const fetchLatestMessages = async () => {
+      try {
+        const res = await fetch("/api/chat/public", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (!res.ok) return;
+
+        const data = await res.json();
+        const serverMessages = Array.isArray(data.messages)
+          ? data.messages.map((msg: any) => ({
+              id: msg.id,
+              role: msg.role,
+              content: msg.content,
+              created_at: msg.created_at,
+              section: null,
+            }))
+          : [];
+
+        if (serverMessages.length === 0) return;
+
+        setMessages((prev) => {
+          const previousServerMessages = prev.filter((msg) => msg.id);
+          const latestServerMessage = serverMessages[serverMessages.length - 1];
+          const previousLatestServerMessage =
+            previousServerMessages[previousServerMessages.length - 1];
+
+          if (
+            previousServerMessages.length === serverMessages.length &&
+            previousLatestServerMessage?.id === latestServerMessage?.id
+          ) {
+            return prev;
+          }
+
+          return serverMessages;
+        });
+      } catch (error) {
+        console.error("Failed to refresh chat messages", error);
+      }
+    };
+
+    fetchLatestMessages();
+    const intervalId = window.setInterval(fetchLatestMessages, 3000);
+
+    return () => window.clearInterval(intervalId);
+  }, [token, isOpen]);
+
   /* auto scroll */
   useEffect(() => {
     if (scrollViewportRef.current) {

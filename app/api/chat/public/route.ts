@@ -3,13 +3,60 @@ import { jwtVerify } from "jose";
 import { db } from "@/db/client";
 import { conversation, knowledge_source } from "@/db/schema";
 import { messages as messagesTable } from "@/db/schema";
-import { eq, inArray } from "drizzle-orm";
+import { asc, eq, inArray } from "drizzle-orm";
 import { countConversationTokens } from "@/lib/countConversationTokens";
 import { client, summarizeConversation } from "@/lib/openAi";
 type ChatMessage = {
   role: "user" | "assistant" | "system";
   content: string;
 };
+
+export async function GET(req: Request) {
+  const authHeader = req.headers.get("Authorization");
+  const token = authHeader?.split(" ")[1];
+
+  if (!token) {
+    return NextResponse.json(
+      { error: "Missing session token" },
+      { status: 401 },
+    );
+  }
+
+  try {
+    const secret = new TextEncoder().encode(process.env.JWT_SECRET!);
+    const { payload } = await jwtVerify(token, secret);
+    const sessionId = payload.sessionId as string;
+    const widgetId = payload.widgetId as string;
+
+    if (!sessionId || !widgetId) {
+      throw new Error("Invalid Token Payload");
+    }
+
+    const [existingConv] = await db
+      .select()
+      .from(conversation)
+      .where(eq(conversation.id, sessionId))
+      .limit(1);
+
+    if (!existingConv || existingConv.chatbot_id !== widgetId) {
+      return NextResponse.json({ messages: [] });
+    }
+
+    const sessionMessages = await db
+      .select()
+      .from(messagesTable)
+      .where(eq(messagesTable.conversation_id, sessionId))
+      .orderBy(asc(messagesTable.created_at));
+
+    return NextResponse.json({ messages: sessionMessages });
+  } catch (error) {
+    console.error("Fetch public messages failed", error);
+    return NextResponse.json(
+      { error: "Invalid or expired session token" },
+      { status: 401 },
+    );
+  }
+}
 
 
 export async function POST(req: Request) {
