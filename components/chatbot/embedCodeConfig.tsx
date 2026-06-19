@@ -52,7 +52,7 @@ const EmbedCodeConfig = ({ chatbotId }: { chatbotId: string | undefined }) => {
         <div className="flex items-start gap-2 text-xs text-amber-500/80 bg-amber-500/10 p-2 rounded-md border border-amber-500/10">
           <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
           <span>
-            Paste this in your Next.js app/layout.tsx file inside the body.
+            Paste this code before the closing {"</head>"} tag on your website.
           </span>
         </div>
 
