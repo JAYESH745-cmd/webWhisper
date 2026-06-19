@@ -6,13 +6,7 @@ import React, { useState } from "react";
 
 const EmbedCodeConfig = ({ chatbotId }: { chatbotId: string | undefined }) => {
   const [copied, setCopied] = useState(false);
-  const embedCode = `import Script from "next/script";
-
-<Script
-  src="${process.env.NEXT_PUBLIC_WEBSITE_URI}/widget.js"
-  data-id="${chatbotId || "..."}"
-  strategy="afterInteractive"
-/>`;
+  const embedCode = `<Script src="${process.env.NEXT_PUBLIC_WEBSITE_URI}/widget.js" data-id="${chatbotId || "..."}" defer></Script>`;
 
   const handleCopyCode = () => {
     setCopied(true);
