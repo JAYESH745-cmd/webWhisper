@@ -14,9 +14,7 @@ const EmbedCodeConfig = ({
   const [copied, setCopied] = useState(false);
 
   const embedCode = `<script
-  src="${process.env.NEXT_PUBLIC_WEBSITE_URI}/widget.js"
-  data-id="${chatbotId || "..."}"
-  defer>
+  src="${process.env.NEXT_PUBLIC_WEBSITE_URI}/widget.js" data-id="${chatbotId || "..."}" defer>
 </script>`;
 
   const handleCopyCode = async () => {
