@@ -5,17 +5,14 @@ import { knowledge_source } from "@/db/schema";
 import { cn } from "@/lib/utils";
 import {
   AlertCircle,
-  Bot,
   ChevronDown,
   MessageCircle,
   Send,
 } from "lucide-react";
-import Image from "next/image";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import React, { useEffect, useRef, useState } from "react";
 import { Section } from "@/@types/types";
-import image from "../../public/image.png"
 
 
 interface ChatbotMetadata {
@@ -352,14 +349,11 @@ const primaryColor = metadata?.color || "#4f46e5";
     <div className="flex flex-col h-screen bg-black overflow-hidden rounded-xl border border-white/10 shadow-2xl">
       <div className="h-14 border-b border-white/10 flex items-center justify-between px-4 bg-[#0E0E12] shrink-0">
         <div className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded-full overflow-hidden shrink-0">
-            <Image
-              src={image}
-              alt="Support agent"
-              width={40}
-              height={40}
-              className="w-full h-full object-cover"
-            />
+          <div
+            className="w-8 h-8 rounded-full flex items-center justify-center shrink-0 text-white"
+            style={{ backgroundColor: primaryColor }}
+          >
+            <MessageCircle className="w-4 h-4" />
           </div>
           <div>
             <h1 className="text-sm font-semibold text-white/80 leading-none">
@@ -392,14 +386,11 @@ const primaryColor = metadata?.color || "#4f46e5";
               )}
             >
               {msg.role !== "user" && (
-                <div className="w-9 h-9 rounded-full overflow-hidden shrink-0">
-                  <Image
-                    src={image}
-                    alt="Support agent"
-                    width={32}
-                    height={32}
-                    className="w-full h-full object-cover"
-                  />
+                <div
+                  className="w-9 h-9 rounded-full flex items-center justify-center shrink-0 text-white"
+                  style={{ backgroundColor: primaryColor }}
+                >
+                  <MessageCircle className="w-4 h-4" />
                 </div>
               )}
 
@@ -433,14 +424,11 @@ const primaryColor = metadata?.color || "#4f46e5";
           {isTyping && (
             <div className="flex w-full justify-start">
               <div className="flex max-w-[85%] gap-3 flex-row">
-                <div className="w-9 h-9 rounded-full overflow-hidden shrink-0">
-                  <Image
-                    src={image}
-                    alt="Support agent"
-                    width={32}
-                    height={32}
-                    className="w-full h-full object-cover"
-                  />
+                <div
+                  className="w-9 h-9 rounded-full flex items-center justify-center shrink-0 text-white"
+                  style={{ backgroundColor: primaryColor }}
+                >
+                  <MessageCircle className="w-4 h-4" />
                 </div>
                 <div className="p-4 rounded-2xl bg-white text-zinc-900  rounded-tl-sm shadow-sm flex items-center gap1">
                   <div className="w-1.5 h-1.5 bg-zinc-400 rounded-full animate-bounce [animation-delay:-0.3s]"></div>
