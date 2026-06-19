@@ -39,9 +39,11 @@ const EmbedPage = () => {
   const [isTyping, setIsTyping] = useState(false);
 
   const scrollViewportRef = useRef<HTMLDivElement>(null);
+  const hasLoadedMessagesRef = useRef(false);
   const activeSectionStorageKey = token
     ? `webWhisper:activeSection:${token}`
     : "";
+  const messagesStorageKey = token ? `webWhisper:messages:${token}` : "";
 
   const handleSend = async () => {
     if (!input.trim() || !token) return;
@@ -91,6 +93,15 @@ const EmbedPage = () => {
       }
     } catch (error) {
       console.error(error)
+      setMessages((prev) => [
+        ...prev,
+        {
+          role: "assistant",
+          content:
+            "I'm having trouble connecting right now. Please try again.",
+          section: null,
+        },
+      ]);
     } finally{
       setIsTyping(false)
     }
@@ -176,10 +187,17 @@ const EmbedPage = () => {
           setActiveSection(savedSection);
         }
 
-        setMessages(
+        const locallySavedMessages =
+          messagesStorageKey && typeof window !== "undefined"
+            ? JSON.parse(window.localStorage.getItem(messagesStorageKey) || "[]")
+            : [];
+
+        const nextMessages =
           restoredMessages.length > 0
             ? restoredMessages
-            : [
+            : Array.isArray(locallySavedMessages) && locallySavedMessages.length > 0
+              ? locallySavedMessages
+              : [
                 {
                   role: "assistant",
                   content:
@@ -187,8 +205,10 @@ const EmbedPage = () => {
                   isWelcome: true,
                   section: null,
                 },
-              ],
-        );
+              ];
+
+        hasLoadedMessagesRef.current = true;
+        setMessages(nextMessages);
       } catch (err) {
         console.error(err);
         window.parent.postMessage({ type: "resetSession" }, "*");
@@ -200,6 +220,12 @@ const EmbedPage = () => {
 
     fetchConfig();
   }, [token]);
+
+  useEffect(() => {
+    if (!messagesStorageKey || !hasLoadedMessagesRef.current) return;
+
+    window.localStorage.setItem(messagesStorageKey, JSON.stringify(messages));
+  }, [messages, messagesStorageKey]);
 
   /* auto scroll */
   useEffect(() => {

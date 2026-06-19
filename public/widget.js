@@ -64,6 +64,9 @@
           } catch (error) {
             console.warn("[webWhisper] failed to clear session", error);
           }
+
+          iframe.remove();
+          requestNewSession();
         }
       });
     }
@@ -73,44 +76,47 @@
       return;
     }
 
-    fetch("https://web-whisper-ten.vercel.app/api/widget/session", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      credentials: "omit",
-      body: JSON.stringify({
-        widget_id: widgetId,
-      }),
-    })
-      .then(function (res) {
-        
-        if (!res.ok) {
-          throw new Error("Session request failed!");
-        }
+    requestNewSession();
 
-        return res.json()
+    function requestNewSession() {
+      fetch("https://web-whisper-ten.vercel.app/api/widget/session", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "omit",
+        body: JSON.stringify({
+          widget_id: widgetId,
+        }),
       })
-      .then(function (data) {
-        if (!data || !data.token) {
-          throw new Error("Invalid Session response !");
-        }
+        .then(function (res) {
+          if (!res.ok) {
+            throw new Error("Session request failed!");
+          }
 
-        try {
-          window.localStorage.setItem(
-            storageKey,
-            JSON.stringify({
-              token: data.token,
-              expiresAt: Date.now() + 1000 * 60 * 60 * 2,
-            }),
-          );
-        } catch (error) {
-          console.warn("[webWhisper] failed to save session", error);
-        }
+          return res.json()
+        })
+        .then(function (data) {
+          if (!data || !data.token) {
+            throw new Error("Invalid Session response !");
+          }
 
-        mountIframe(data.token);
-      })
-      .catch(function (err) {
-        console.error("[webWhisper] failed to load widget!", err);
-      });
+          try {
+            window.localStorage.setItem(
+              storageKey,
+              JSON.stringify({
+                token: data.token,
+                expiresAt: Date.now() + 1000 * 60 * 60 * 2,
+              }),
+            );
+          } catch (error) {
+            console.warn("[webWhisper] failed to save session", error);
+          }
+
+          mountIframe(data.token);
+        })
+        .catch(function (err) {
+          console.error("[webWhisper] failed to load widget!", err);
+        });
+    }
   } catch (error) {
     console.error("[webWhisper] widget error!", error);
   }
