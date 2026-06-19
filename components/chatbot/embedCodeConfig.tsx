@@ -6,12 +6,17 @@ import React, { useState } from "react";
 
 const EmbedCodeConfig = ({ chatbotId }: { chatbotId: string | undefined }) => {
   const [copied, setCopied] = useState(false);
+  const embedCode = `import Script from "next/script";
+
+<Script
+  src="${process.env.NEXT_PUBLIC_WEBSITE_URI}/widget.js"
+  data-id="${chatbotId || "..."}"
+  strategy="afterInteractive"
+/>`;
 
   const handleCopyCode = () => {
     setCopied(true);
-    navigator.clipboard.writeText(
-      `<script src="${process.env.NEXT_PUBLIC_WEBSITE_URI}/widget.js" data-id="${chatbotId}" defer></script>`,
-    );
+    navigator.clipboard.writeText(embedCode);
     setTimeout(() => {
       setCopied(false);
     }, 2000);
@@ -31,9 +36,7 @@ const EmbedCodeConfig = ({ chatbotId }: { chatbotId: string | undefined }) => {
         <div className="relative group">
           <div className="bg-[#050509] border border-white/10 rounded-xl p-4 overflow-hidden">
             <pre className="text-xs text-zinc-300 font-mono overflow-x-auto whitespace-pre rounded-lg">
-              {`<script src="${process.env.NEXT_PUBLIC_WEBSITE_URI}/widget.js"
-data-id="${chatbotId || "..."}" defer>
-</script>`}
+              {embedCode}
             </pre>
           </div>
           <Button
@@ -53,8 +56,7 @@ data-id="${chatbotId || "..."}" defer>
         <div className="flex items-start gap-2 text-xs text-amber-500/80 bg-amber-500/10 p-2 rounded-md border border-amber-500/10">
           <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
           <span>
-            Paste this code before the closing &lt;/head&gt; tag on your
-            website.
+            Paste this in your Next.js app/layout.tsx file inside the body.
           </span>
         </div>
 
