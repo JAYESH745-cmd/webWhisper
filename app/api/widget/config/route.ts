@@ -1,8 +1,8 @@
 import { NextResponse } from "next/server";
 import { jwtVerify } from "jose";
 import { db } from "@/db/client";
-import { chatBotMetadata, sections } from "@/db/schema";
-import { eq } from "drizzle-orm";
+import { chatBotMetadata, messages, sections } from "@/db/schema";
+import { asc, eq } from "drizzle-orm";
 
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
@@ -20,6 +20,7 @@ export async function GET(req: Request) {
 
     const widgetId = payload.widgetId as string;
     const ownerEmail = payload.ownerEmail as string;
+    const sessionId = payload.sessionId as string;
 
     const [meta] = await db
       .select()
@@ -33,7 +34,15 @@ export async function GET(req: Request) {
 
     const userSections = await db.select().from(sections).where(eq(sections.user_email,ownerEmail))
 
-    return NextResponse.json({metadata:meta,sections:userSections})
+    const sessionMessages = sessionId
+      ? await db
+          .select()
+          .from(messages)
+          .where(eq(messages.conversation_id, sessionId))
+          .orderBy(asc(messages.created_at))
+      : [];
+
+    return NextResponse.json({metadata:meta,sections:userSections,messages:sessionMessages})
 
 
 

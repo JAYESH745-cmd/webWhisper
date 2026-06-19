@@ -39,6 +39,9 @@ const EmbedPage = () => {
   const [isTyping, setIsTyping] = useState(false);
 
   const scrollViewportRef = useRef<HTMLDivElement>(null);
+  const activeSectionStorageKey = token
+    ? `webWhisper:activeSection:${token}`
+    : "";
 
   const handleSend = async () => {
     if (!input.trim() || !token) return;
@@ -82,7 +85,7 @@ const EmbedPage = () => {
             role: "assistant",
             content:
               "I'm having trouble connecting right now. Please try again.",
-            setion: null,
+            section: null,
           },
         ]);
       }
@@ -154,17 +157,41 @@ const EmbedPage = () => {
         setMetadata(data.metadata);
         setSections(data.sections || []);
 
-        setMessages([
-          {
-            role: "assistant",
-            content:
-              data.metadata?.welcome_message || "Hi! How can I help you?",
-            isWelcome: true,
-            section: null,
-          },
-        ]);
+        const restoredMessages = Array.isArray(data.messages)
+          ? data.messages.map((msg: any) => ({
+              role: msg.role,
+              content: msg.content,
+              section: null,
+            }))
+          : [];
+        const savedSection =
+          activeSectionStorageKey && typeof window !== "undefined"
+            ? window.localStorage.getItem(activeSectionStorageKey)
+            : null;
+        const sectionStillExists = (data.sections || []).some(
+          (section: Section) => section.name === savedSection,
+        );
+
+        if (savedSection && sectionStillExists) {
+          setActiveSection(savedSection);
+        }
+
+        setMessages(
+          restoredMessages.length > 0
+            ? restoredMessages
+            : [
+                {
+                  role: "assistant",
+                  content:
+                    data.metadata?.welcome_message || "Hi! How can I help you?",
+                  isWelcome: true,
+                  section: null,
+                },
+              ],
+        );
       } catch (err) {
         console.error(err);
+        window.parent.postMessage({ type: "resetSession" }, "*");
         setError("Unable to load chat. Please try again later.");
       } finally {
         setLoading(false);
@@ -223,6 +250,9 @@ const primaryColor = metadata?.color || "#4f46e5";
 
   const handleSectionClick = (sectionName: string) => {
     setActiveSection(sectionName);
+    if (activeSectionStorageKey) {
+      window.localStorage.setItem(activeSectionStorageKey, sectionName);
+    }
     const userMsg = { role: "user", content: sectionName, section: null };
     setMessages((prev) => [...prev, userMsg]);
     setInput("");

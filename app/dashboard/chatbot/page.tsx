@@ -88,21 +88,37 @@ const ChatbotPage = () => {
     setInput("");
     setIsTyping(true);
 
-    const res = await fetch("/api/chat/test",{
-      method:"POST",
-      headers:{"Content-Type":"application/json"},
-      body:JSON.stringify({
-        messages:[...messages,userMsg],
-        knowledge_source_ids:sourceIds
+    try {
+      const res = await fetch("/api/chat/test",{
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({
+          messages:[...messages,userMsg],
+          knowledge_source_ids:sourceIds
+        })
       })
-    })
 
-    if(res.ok){
       const data = await res.json();
+
       setMessages((prev) =>[
         ...prev,
-        {role:"assistant",content:data.response,section:null},
+        {
+          role:"assistant",
+          content:data.response || "Sorry, I couldn't generate a response right now.",
+          section:null
+        },
       ]);
+    } catch (error) {
+      console.error("Test chat failed", error);
+      setMessages((prev) =>[
+        ...prev,
+        {
+          role:"assistant",
+          content:"Sorry, I'm having trouble connecting right now. Please try again.",
+          section:null
+        },
+      ]);
+    } finally {
       setIsTyping(false);
     }
 

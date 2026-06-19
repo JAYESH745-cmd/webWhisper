@@ -14,6 +14,65 @@
       return;
     }
 
+    var storageKey = "webWhisper:session:" + widgetId;
+    var storedToken = null;
+
+    try {
+      var storedSession = JSON.parse(window.localStorage.getItem(storageKey) || "null");
+      if (storedSession && storedSession.token && storedSession.expiresAt > Date.now()) {
+        storedToken = storedSession.token;
+      } else {
+        window.localStorage.removeItem(storageKey);
+      }
+    } catch (error) {
+      console.warn("[webWhisper] localStorage unavailable", error);
+    }
+
+    function mountIframe(token) {
+      var iframe = document.createElement("iframe");
+
+      iframe.src =
+        `https://web-whisper-ten.vercel.app/embed?token=` + encodeURIComponent(token);
+
+      iframe.setAttribute("title", "Support chat");
+      iframe.style.position = "fixed";
+      iframe.style.bottom = "20px";
+      iframe.style.right = "20px";
+      iframe.style.width = "60px";
+      iframe.style.height = "60px";
+      iframe.style.border = "none";
+      iframe.style.zIndex = "999999";
+      iframe.style.borderRadius = "30px";
+      iframe.style.background = "transparent";
+      iframe.style.transition = "all 0.3s ease";
+
+      console.log(iframe)
+
+      document.body.appendChild(iframe);
+
+      window.addEventListener("message", function (event) {
+        if (event.data && event.data.type === "resize") {
+          iframe.style.width = event.data.width;
+          iframe.style.height = event.data.height;
+          iframe.style.borderRadius = event.data.borderRadius || "12px";
+          if (event.data.boxShadow) {
+            iframe.style.boxShadow = event.data.boxShadow;
+          }
+        } else if (event.data && event.data.type === "resetSession") {
+          try {
+            window.localStorage.removeItem(storageKey);
+          } catch (error) {
+            console.warn("[webWhisper] failed to clear session", error);
+          }
+        }
+      });
+    }
+
+    if (storedToken) {
+      mountIframe(storedToken);
+      return;
+    }
+
     fetch("https://web-whisper-ten.vercel.app/api/widget/session", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -31,42 +90,23 @@
         return res.json()
       })
       .then(function (data) {
-     
         if (!data || !data.token) {
           throw new Error("Invalid Session response !");
         }
 
-        var iframe = document.createElement("iframe");
+        try {
+          window.localStorage.setItem(
+            storageKey,
+            JSON.stringify({
+              token: data.token,
+              expiresAt: Date.now() + 1000 * 60 * 60 * 2,
+            }),
+          );
+        } catch (error) {
+          console.warn("[webWhisper] failed to save session", error);
+        }
 
-        iframe.src =
-          `https://web-whisper-ten.vercel.app/embed?token=` + encodeURIComponent(data?.token);
-
-        iframe.setAttribute("title", "Support chat");
-        iframe.style.position = "fixed";
-        iframe.style.bottom = "20px";
-        iframe.style.right = "20px";
-        iframe.style.width = "60px";
-        iframe.style.height = "60px";
-        iframe.style.border = "none";
-        iframe.style.zIndex = "999999";
-        iframe.style.borderRadius = "30px";
-        iframe.style.background = "transparent";
-        iframe.style.transition = "all 0.3s ease";
-
-        console.log(iframe)
-
-        document.body.appendChild(iframe);
-
-        window.addEventListener("message", function (event) {
-          if (event.data && event.data.type === "resize") {
-            iframe.style.width = event.data.width;
-            iframe.style.height = event.data.height;
-            iframe.style.borderRadius = event.data.borderRadius || "12px";
-            if (event.data.boxShadow) {
-              iframe.style.boxShadow = event.data.boxShadow;
-            }
-          }
-        });
+        mountIframe(data.token);
       })
       .catch(function (err) {
         console.error("[webWhisper] failed to load widget!", err);
