@@ -1,62 +1,77 @@
 "use client";
+
+import React, { useState } from "react";
+import { AlertCircle, Check, Code, Copy } from "lucide-react";
+
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { AlertCircle, Check, Code, Copy } from "lucide-react";
-import React, { useState } from "react";
 
-const EmbedCodeConfig = ({ chatbotId }: { chatbotId: string | undefined }) => {
+const EmbedCodeConfig = ({
+  chatbotId,
+}: {
+  chatbotId: string | undefined;
+}) => {
   const [copied, setCopied] = useState(false);
-  const embedCode = `<Script 
-    src="${process.env.NEXT_PUBLIC_WEBSITE_URI}/widget.js" data-id="${chatbotId || "..."}" defer>
-  </Script> `;
 
-  const handleCopyCode = () => {
+  const embedCode = `<script
+  src="${process.env.NEXT_PUBLIC_WEBSITE_URI}/widget.js"
+  data-id="${chatbotId || "..."}"
+  defer>
+</script>`;
+
+  const handleCopyCode = async () => {
+    await navigator.clipboard.writeText(embedCode);
     setCopied(true);
-    navigator.clipboard.writeText(embedCode);
+
     setTimeout(() => {
       setCopied(false);
     }, 2000);
   };
+
   return (
-    <Card className="border-white/5 bg-[#0A0A0E]">
-      <CardHeader className="pb-3">
+    <Card className="bg-[#0A0A0E] border border-white/5">
+      <CardHeader>
         <div className="flex items-center gap-2">
-          <Code className="w-4 h-4 text-zinc-500" />
-          <CardTitle className="text-sm font-medium text-white uppercase tracking-wider">
+          <Code className="h-4 w-4 text-zinc-500" />
+          <CardTitle className="text-white uppercase tracking-wider text-sm">
             Embed Code
           </CardTitle>
         </div>
       </CardHeader>
 
       <CardContent className="space-y-4">
-        <div className="relative group">
-          <div className="bg-[#050509] border border-white/10 rounded-xl p-4 overflow-hidden">
-            <pre className="text-xs text-zinc-300 font-mono overflow-x-auto whitespace-pre rounded-lg">
+        {/* Code Block */}
+        <div className="relative">
+          <div className="rounded-2xl border border-white/10 bg-[#0B0B0F] p-5">
+            <pre className="overflow-x-auto whitespace-pre-wrap break-all font-mono text-sm leading-6 text-zinc-300">
               {embedCode}
             </pre>
           </div>
+
           <Button
-            variant={"secondary"}
-            size={"icon"}
+            variant="ghost"
+            size="icon"
             onClick={handleCopyCode}
-            className="absolute top-2 right-2 text-xs px-2 py-1 rounded bg-zinc-800 text-white transition"
+            className="absolute right-4 top-4 h-10 w-10 rounded-xl border border-white/10 bg-zinc-800 hover:bg-zinc-700"
           >
             {copied ? (
-              <Check className="w-3 h-3" />
+              <Check className="h-4 w-4 text-green-400" />
             ) : (
-              <Copy className="w-3 h-3" />
+              <Copy className="h-4 w-4 text-white" />
             )}
           </Button>
         </div>
 
-        <div className="flex items-start gap-2 text-xs text-amber-500/80 bg-amber-500/10 p-2 rounded-md border border-amber-500/10">
-          <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
+        {/* Warning Box */}
+        <div className="flex items-center gap-3 rounded-xl border border-amber-500/20 bg-amber-500/10 px-4 py-3 text-sm text-amber-400">
+          <AlertCircle className="h-4 w-4 shrink-0" />
+
           <span>
-            Paste this code before the closing {"</head>"} tag on your website.
+            Paste this code before the closing{" "}
+            <code className="font-mono text-amber-300">&lt;/head&gt;</code>{" "}
+            tag on your website.
           </span>
         </div>
-
-      
       </CardContent>
     </Card>
   );
